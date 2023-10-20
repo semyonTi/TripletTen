@@ -9,15 +9,14 @@ namespace Triplet
     {
         static void Main(string[] args)
         {
-            Stopwatch stp = new Stopwatch();
-            stp.Start();
             string filePath = "C:\\test.txt";
             TopTenTriplet(filePath);
-            stp.Stop();
-            Console.WriteLine(stp.ElapsedMilliseconds);
         }
         public static void TopTenTriplet(string filePath)
         {
+            Stopwatch stp = new Stopwatch();
+            stp.Start();
+
             string fileContent = System.IO.File.ReadAllText(filePath);
             var chunks = fileContent.Length / Environment.ProcessorCount;
             var chunkSize = chunks > 3 ? chunks : fileContent.Length;
@@ -32,6 +31,9 @@ namespace Triplet
             {
                 Console.WriteLine((x.Key, x.Value));
             }
+
+            stp.Stop();
+            Console.WriteLine(stp.ElapsedMilliseconds);
         }
         public static void AddTriplet(char[] str, ConcurrentDictionary<string, int> triplet)
         {
