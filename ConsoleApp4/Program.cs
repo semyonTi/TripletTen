@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Concurrent;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 
 namespace Triplet
@@ -9,18 +10,19 @@ namespace Triplet
     {
         static void Main(string[] args)
         {
-            string filePath = "C:\\test.txt";
-            TopTenTriplet(filePath);
+            var filePath = "C:\\test.txt";
+            GetTopTenTriplet(filePath);
         }
-        public static void TopTenTriplet(string filePath)
+
+        private static void GetTopTenTriplet(string filePath)
         {
-            Stopwatch stp = new Stopwatch();
+            var stp = new Stopwatch();
             stp.Start();
 
-            string fileContent = System.IO.File.ReadAllText(filePath);
+            var fileContent = File.ReadAllText(filePath);
             var chunks = fileContent.Length / Environment.ProcessorCount;
             var chunkSize = chunks > 3 ? chunks : fileContent.Length;
-            ConcurrentDictionary<string, int> triplet = new ConcurrentDictionary<string, int>();
+            var triplet = new ConcurrentDictionary<string, int>();
             fileContent.Chunk(chunkSize)
                 .AsParallel()
                 .WithDegreeOfParallelism(Environment.ProcessorCount)
@@ -31,11 +33,11 @@ namespace Triplet
             {
                 Console.WriteLine((x.Key, x.Value));
             }
-
             stp.Stop();
             Console.WriteLine(stp.ElapsedMilliseconds);
         }
-        public static void AddTriplet(char[] str, ConcurrentDictionary<string, int> triplet)
+
+        private static void AddTriplet(char[] str, ConcurrentDictionary<string, int> triplet)
         {
             var tmp = 0;
             for (int i = 3; i <= str.Length; i++)
